@@ -1,10 +1,3 @@
-output "id" {
-  value = sha1("${template_dir.static-manifests.id} ${template_dir.manifests.id}")
-}
-
-output "content_hash" {
-  value = sha1("${template_dir.static-manifests.id} ${template_dir.manifests.id}")
-}
 
 output "cluster_dns_service_ip" {
   value = cidrhost(var.service_cidr, 10)
@@ -49,24 +42,3 @@ output "etcd_peer_cert" {
 output "etcd_peer_key" {
   value = tls_private_key.peer.private_key_pem
 }
-
-# Some platforms may need to reconstruct the kubeconfig directly in user-data.
-# That can't be done with the way template_file interpolates multi-line
-# contents so the raw components of the kubeconfig may be needed.
-
-output "ca_cert" {
-  value = base64encode(tls_self_signed_cert.kube-ca.cert_pem)
-}
-
-output "kubelet_cert" {
-  value = base64encode(tls_locally_signed_cert.kubelet.cert_pem)
-}
-
-output "kubelet_key" {
-  value = base64encode(tls_private_key.kubelet.private_key_pem)
-}
-
-output "server" {
-  value = format("https://%s:%s", var.api_servers[0], var.external_apiserver_port)
-}
-
